@@ -47,3 +47,14 @@ Content Type: application/json
 THIS IS A BASIC STRUCTURE OF THE HTTP STRUCTURE 
 ____________________________________________________________________________________________________________________
 
+WE mOVE ON TO POSTMAN!! helps us make http request more easily (The end points prefereably)
+
+Go and make a new collection, enter a URL (pereferably of weather app) and see the response!
+
+Now RESORUCES CREATION ENDPOINTS
+
+httpstatuscode.com {Place to know all the Status codes}
+
+Mongoose.js connects us to Database, User.js and task.js gives us the user and task models, POST endpoints
+
+
