@@ -22,4 +22,28 @@ We make another request, POST / tasks - JSON request [This falls under CREATE]. 
 
 We make another request, PATCH / tasks / (Object ID) [This falls under UPDATE]. Server will put it in DB if valid then give back response with its status code
 
-We make another request, DELETE / tasks / (Object ID) [This falls under DELETE]. Server will put it in DB if valid then give back response with its status code
+We make another request, DELETE / tasks / (Object ID) [This falls under DELETE]. Server will put it in DB if valid then give back response with its status code 
+
+Requst has 
+______________________
+Along with the above we also have other signification data when we request/get response i.e.
+Accept: application/json
+Connection: Keep-Alive
+Authorization: Bearer agjiakogjkae314wjrf1 ..
+
+{description: 'bla bla'} //This is a completed line
+
+
+Response has 
+___________________
+
+STATUS CODE 
+Date : 69/69/6999
+Server : EXPRESS
+Content Type: application/json
+
+{"_id": "sadasd", "name": "asfAS" ..... etc.}
+
+THIS IS A BASIC STRUCTURE OF THE HTTP STRUCTURE 
+____________________________________________________________________________________________________________________
+
