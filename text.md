@@ -58,3 +58,15 @@ httpstatuscode.com {Place to know all the Status codes}
 Mongoose.js connects us to Database, User.js and task.js gives us the user and task models, POST endpoints
 
 
+Async Await - A JS Feature less asynchronous than Async JS. Saves lots of things easier
+We using it on every Route Handler in this project
+
+Now we put async await to all our routes to make the handling easier, Syntax is tuff but still better than fully async code!
+
+for create, we got post
+for read, we got get
+for Update, we got patch 
+for Delete - we got delete
+
+After doing these opeerations we go and switch to Seperating route files to make it cleaner!
+Routes for Users and Routes for Tasks
