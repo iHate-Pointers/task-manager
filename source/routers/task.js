@@ -1,10 +1,16 @@
 //We are taking the existing routes of Task and taking using it
 const express = require('express')
 const Task = require('../models/task')
+const auth = require('../middleware/authentication')
+
 const router = new express.Router() //Create a new Router using express!
 
-router.post('/tasks', async (req, res) => {
-    const task = new Task(req.body) //call in a new Task from Task Model we made using Mongoose
+router.post('/tasks', auth, async (req, res) => {
+    // const task = new Task(req.body) //call in a new Task from Task Model we made using Mongoose
+    const task = new Task({
+        ...req.body, //ES 6 Spread operator copies all data to this task file
+        owner: req.user._id //grab the owner's ID (person we just authenticated!)
+    }) 
 
     try {
         await task.save()
@@ -20,11 +26,11 @@ router.post('/tasks', async (req, res) => {
     // })
 })
 
-router.get('/tasks', async (req, res) => {
-
+router.get('/tasks', auth, async (req, res) => {
     try{
-        const user = await Task.find({})
-        res.send(user)
+        // const task = await Task.find({})
+        await req.user.populate('tasks')
+        res.send(req.user.tasks)
     }
     catch(error){
         res.status(500).send(error)
@@ -37,13 +43,15 @@ router.get('/tasks', async (req, res) => {
     // })
 })
 
-router.get('/tasks/:id', async (req, res) => {
+router.get('/tasks/:id',auth,  async (req, res) => {
     const _id = req.params.id
 
     try{
-        const task = await Task.findById(_id)
+        // const task = await Task.findById(_id)
+        const task = await Task.findOne( {_id, owner: req.user._id}) //Id of authenticated user
+
         if(!task){
-            return res.status(404).send('Not Found')
+            return res.status(404).send()
         }
         res.send(task)
     }catch(error){
@@ -60,7 +68,7 @@ router.get('/tasks/:id', async (req, res) => {
     // })
 })
 
-router.patch('/tasks/:id', async (req,res) => {
+router.patch('/tasks/:id',auth, async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ["description", "completed"]
 
@@ -69,22 +77,27 @@ router.patch('/tasks/:id', async (req,res) => {
         return res.status(400).send({error: 'Invalid Operation'})
     }
     try{
-        const user = await Task.findByIdAndUpdate(req.params.id, req.body, {runValidators: true, new: true})
-        if(!user){
+        // const task = await Task.findByIdAndUpdate(req.params.id, req.body, {runValidators: true, new: true})
+        const task = await Task.findOne({_id: req.params.id, owner: req.user._id})
+        // const task = await Task.findById(req.params.id)
+        if(!task){
             return res.status(404).send('Task not Found. Invalid ID')
         }
-        res.send(user)
+        updates.forEach((update) => task[update] = req.body[update])
+        await task.save()
+        res.send(task)
     }catch(error){
         res.status(500).send(error)
     }
 })
 
-router.delete('/tasks/:id', async (req, res) => {
+router.delete('/tasks/:id',auth, async (req, res) => {
     try{
-        const task = await Task.findByIdAndDelete(req.params.id)
+        const task = await Task.findOneAndDelete({_id: req.params.id, owner: req.user._id})
         if(!task){
             return res.status(404).send('Task Not Found. Invalid ID')
         }
+        //Cascade Delete
         res.send(task)
     }catch(error){
         res.status(500).send(error)

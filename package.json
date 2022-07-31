@@ -11,8 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "chalk": "^5.0.1",
     "express": "^4.16.4",
+    "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.8.0",
     "mongoose": "^6.4.7",
     "nodemon": "^1.18.9",
