@@ -26,10 +26,42 @@ router.post('/tasks', auth, async (req, res) => {
     // })
 })
 
+// /tasks alone will give us all tasks, which is not that great. Hence we can do better by ->
+// First adding filtering, true or false
+// To add support for pagination we add limit and skip equal to numbers
+// Limit is basically number of data on a page, skip = number of data we skip
+// generally sorting is by 1 = ascending, -1 = descending
+
+// URL layout of the filter, pagination, sorting
+// GET /tasks?completed=true or completed=false
+// GET /tasks?limit=10&skip=0,10 etc...
+// GET /tasks?sortBy=createdAt:desc
 router.get('/tasks', auth, async (req, res) => {
+    const match = {}
+    const sort  = {}
+     
+    if(req.query.completed){
+        match.completed = (req.query.completed === 'true')? true: false 
+    }
+
+    if(req.query.sortBy){
+        const parts = req.query.sortBy.split(':')
+        sort[parts[0]] = (parts[1] === 'desc')? -1 : 1
+    }
+
     try{
         // const task = await Task.find({})
-        await req.user.populate('tasks')
+        // await req.user.populate('tasks')
+        await req.user.populate({ //This to exclude tasks with the specific completedvalue
+            path: 'tasks',
+            match,
+            options: { //For sorting and pagination
+                // limit: 2 //IF we set this to 2, we only see 2 data,
+                limit: parseInt(req.query.limit), //It will convert to integer since query is string
+                skip: parseInt(req.query.skip),
+                sort //1 for ascending, -1 descending
+            }
+        })
         res.send(req.user.tasks)
     }
     catch(error){

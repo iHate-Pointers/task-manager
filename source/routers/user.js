@@ -3,6 +3,8 @@ const express = require('express')
 const User = require('../models/user')
 const router = new express.Router() //Create a new Router using express!
 const auth = require('../middleware/authentication')
+const multer = require('multer')
+const sharp = require('sharp')
 
 // To communincate with postman
 
@@ -152,6 +154,59 @@ router.delete('/users/me', auth, async (req, res) => {
         res.send(req.user)
     }catch(error){
         res.status(500).send()
+    }
+})
+
+const avatar = multer({
+    // dest: 'avatar', //Without this data will not be saved in avatar folder! So we save on user profile
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req, file, cb) {
+        if(!file.originalname.match(/\.(jpeg|jpg|png)$/)){
+            return cb(new Error('Please upload an Image'))
+        }
+        cb(undefined, true)
+    }
+})
+// we are storing avatar in binary data cause having a file itself means losing it everytime we deploy!
+//This would be used to create and update the avatar!
+router.post('/users/me/avatar', auth, avatar.single('avatar'), async (req, res) => {
+    // Convert back to buffer to access to, make it sharp type so we can perform sharp operations
+    const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250}).png().toBuffer()
+    //Sharp is making changes in the stuff here
+
+    // req.user.avatar = req.file.buffer //This contains all the binary data of the file!
+    req.user.avatar = buffer
+    await req.user.save() //Storing the binary data in buffer, when uploading!
+    res.send()
+}, (error, req, res, next) => {
+    res.status(400).send({ error: error.message})
+}) 
+
+//Delete the avatar/wipe off the avatar field
+router.delete('/users/me/avatar', auth, async(req,res) => {
+    req.user.avatar = undefined
+    await req.user.save()
+    res.send()
+}, (error,req, res, next) => {
+    res.status(400).send({ error: error.message})
+})
+
+//Instead of just seeing binary we use this router to get image
+router.get('/users/:id/avatar', async (req, res) => {
+    try{
+        const user = await User.findById(req.params.id)
+        
+        if(!user || !user.avatar){ //directly jump to catch block
+            throw new Error()
+        }
+        //Need to tell the file that It's an image so hence we give res.set
+        //name of response we are trying to set = arg1, arg2 {application/json is default} =  value we are trying to set on the response
+        res.set('Content-Type', 'image/png')  
+        res.send(user.avatar)
+    }catch(e){
+        res.status(404).send()
     }
 })
 

@@ -1,14 +1,15 @@
 const express = require('express')
-require('./models/db/mongoose')
+require('./models/db/mongoose') //We only need to connect to DB with this
 const User = require('./models/user')
 const Task = require('./models/task')
 const userRouter = require('./routers/user')
 const taskRouter = require('./routers/task')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const multer = require('multer')
 
 const app = express()
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 //This is Middleware, all request to get is disabled here!
 // app.use((req, res, next) => {
@@ -27,16 +28,50 @@ const port = process.env.PORT || 3000;
 //     res.status(503).send('Server is in maintainance Mode')
 // })
 
+
+
 app.use(express.json())
 app.use(userRouter)
 app.use(taskRouter)
 
 
+// Multer Demonstration (File Uploads)
+// const upload = multer({
+//     dest: 'images', //This automatically creates a folder named like the value of dest
+//     limits: {
+//         fileSize: 1000000 //Max size set to 1000000Bytes
+//     },
+//     fileFilter(req, file, cb){ //[req - has request], [file - type of file] [cb - callback]
+//         // In multer file information, we want to use OriginalName, which gets orginal file's name
+//         // if (!file.originalname.endsWith('.pdf')){ //File's name is not pdf
+//         if (!file.originalname.match(/\.(doc|docx)$/)){
+//             return cb(new Error('Please upload a word document!'))
+//         }
+//         cb(undefined, true)
+//         // cb(new Error('File must be a PDF'))
+//         // cb(undefined, true)
+//         // cb(undefined, false)
+//     }
+// })
+
+// const errorMiddleware = (req, res, next) => {
+//     throw new Error('From my Middleware')
+// }
+
+//Endpoint where client will be able to upload these files
+//Alawys add auth middle ware inbetween upload, cause without authentication we canoot upload a pic
+// app.post('/test', auth, upload.single('upload'), (req, res) => { //midware test.single('upload'), helps us upload a single file in this route
+
+//     res.send()
+// }, (error, req, res, next) => { /*all 4 must be provided so express knows it's to handle errors */
+//     // res.status(400).send( { error: error.message}) //This will send the user a useful error message (error we said above)
+//     res.status(400).send( { error: error.message})
+// })
 
 // const router = new express.Router() //No arguments, we use methods on router to customize it
 // router.get('/test', (req, res) => {
 //     res.send('This is a test!')
-// })
+// }) 
 
 app.listen(port, () => {
     console.log(`Server is up on port ${port}`)
@@ -92,7 +127,7 @@ From 400-499, it's USER SIDE ERROR, from 500-599 IT's Client Side ERROR! status 
 
 // console.log(JSON.stringify(pet))
 
-//Little Task Demonstration
+//Little Task (Schema) to dispaly all tasks of user
 // const main = async () => {
 //     // const task = await Task.findById('62e63061cccb526d045dca5c')
 //     // await task.populate('owner') //Populate data from owner, all data of the owner from USers too (We linked in owner field in task)
@@ -105,3 +140,4 @@ From 400-499, it's USER SIDE ERROR, from 500-599 IT's Client Side ERROR! status 
 // }   
  
 // main()
+

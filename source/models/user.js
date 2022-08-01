@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
+const sharp = require('sharp')
 const jwt = require('jsonwebtoken')
 const Task = require('./task')
  
@@ -47,7 +48,12 @@ const userSchema = new mongoose.Schema({
             type: String,
             required: true //No need Trim as it's computer designed
         }
-    }]
+    }],
+    avatar: {
+        type: Buffer //This type helps us store buffer in binary Data!
+    }
+}, { //To get timestamps
+    timestamps: true
 })
 
 userSchema.virtual('tasks', {
@@ -66,6 +72,7 @@ userSchema.methods.toJSON = function () {
     
     delete userObject.password
     delete userObject.tokens
+    delete userObject.avatar //Remove it from profile response only(hide it) since it takes lotta space
 
     return userObject //send the above two as response
 }
@@ -74,7 +81,7 @@ userSchema.methods.toJSON = function () {
 /*Methods are accesible in instances, static methods are accesible in models (like has email and password  etc.)*/
 userSchema.methods.generateAuthToken = async function () { //Since it contains this keyword
     const user = this
-    const token = jwt.sign({ _id: user._id.toString() }, 'thisissecretkey' ) //Since it's an object we need to stringy it up, 2nd arg is secret key
+    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET ) //Since it's an object we need to stringy it up, 2nd arg is secret key
     user.tokens = user.tokens.concat ({ token }) //Adding the above generated string to token
     await user.save()
 

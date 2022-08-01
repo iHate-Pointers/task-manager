@@ -8,7 +8,10 @@ First thing in the app we did, Data Validation and Sanitization (trim, required,
 Then we Structured the API, using REST API (Representational State Transfer - Application Program Interface)
 An API is a set of tool that helps you build software tools, (npm provides stuffs like fs, nodemon etc. || express also provides us stuffs)
 
+-----------------------------------------------------------
+
 REST API 
+
 -------------------------------
 REST API allows clients such as a web application, to access and manupilate resources using set of pre-defined operations like making a new task or stuffs like uploading profile pic for account. 
 
@@ -71,8 +74,12 @@ for Delete - we got delete
 After doing these opeerations we go and switch to Seperating route files to make it cleaner!
 Routes for Users and Routes for Tasks
 
+-----------------------------------------------------------
+
 We then move to 
 //Authentication part!!
+
+-----------------------------------------------------------
 Passwords must be securely saved or else people can delete it and edit it and stuffs! Hence we give all our data some kinda authentication
 Solution is to store not a plain text pass but a hashed password!
 Algorithm we are using is called B-Crypt, secure the password!
@@ -143,3 +150,66 @@ WE then configured it in such a way that when we logged in from user1 we cannot 
 Now, we cascade delete, we make sure user who's deleting his/her account, their data doesn't stay on our database. This will save us data -
 Approach1 - Go to User Routes, put a code on deleting all tasks when we delete the user.
 Approach2 - Use Middleware, to make a userScehma.pre to delete all task when user itself is deleted
+
+With this we are done with Authentication!
+
+-----------------------------------------------------------
+
+This Section has Sorting, Pagination and Filtering on our Data
+-----------------------------------------------------------
+We will add timestamps to the creation date of our users/tasks
+When user signed up, task created or updated.
+To create time stamp, we update userSchemaa with another object argument named timestamps: true
+This will give us created at and updated at fields
+
+Filtering - We then move on to filter our tasks data, by giving a query on url ?completed=true
+This will give a flexitbility or control over what data we want to see!
+WE update our query field by doing the same and hence getting the final result in the end
+
+Pagination - Google search Engine uses pagination, idea of creating of data that are requested so that large amount of data isn't shown in 1 go! We will use load more, or infinite scrolling data, (like instagram)
+We use options -> limit and skip to perform this task. (The syntax is same like googles, etc)
+
+Sorting - Basically sorting by ascending or descending, -1 = descending, 1 = ascending, It's one of the mongoose built-in options!
+
+------------------------------------------------------------------
+FILE UPLOADS
+------------------------------------------------------------------
+
+File upload support in express is not there, we use npm library named - multer (multiple part/form-data)
+WE might want to use form-data to upload. key will be middware's string (upload), change it from text to file
+
+Two specific file validation in this section, one is file size and other is file type! It can be set on multer using limits object.
+Alawys add auth middle ware before upload, cause without authentication we canoot upload a pic***
+File System gets wiped everytime we deploy user images, instead of storing in FS, we put a new field to store image binary data!
+By using binary data we can render images in html!
+Now we load it into localhost using the iD
+we autocrop it, and format it to our needs! To do so we are using npm sharp.
+Convert all image to png/ makes large image smaller(compress and etc.)
+
+--------------------------------------------------------------------
+SENDING EMAILS
+-------------------------------------------------------------------
+
+I have used MailChimp to configure/send emails. Much better than fakeass sendgrid that charged me 10$.
+But then this plan failed miserably! Will come back to this later
+
+______________________________________________________________
+Getting ready for deployment
+______________________________________________________________
+
+Environment variables custom for our app (inside of app.js we are using process.env)
+Based of the environmnet(developer or production) we have to change db file as we cannot access the app when it's in production version! When we have API key in code, we gotta keep it in env variables such that it's not there in git repo as it's public!
+
+env-cmd -f ./config/dev.env nodemon source/app.js -e js,html,css,env
+
+An additional -f is required now to run it succesfully else it cannot locate the file!
+We can hide env files!
+
+WE are locally using our storage as MongoDB storage. Now want to use MongoDB data hosting
+MongoDB Atlas -> a DB site officially handled by MongoDB
+MongoDB Compass -> like Robo3T but official handel
+
+
+
+
+

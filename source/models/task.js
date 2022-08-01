@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const Task = mongoose.model('Task', { //Basically the 'tasks' inside model is the collection. and inside it we specify documents and their fields
+const taskSchema = new mongoose.Schema({ 
     description: {
         type: String,
         trim: true,
@@ -15,6 +15,10 @@ const Task = mongoose.model('Task', { //Basically the 'tasks' inside model is th
         required: true,
         ref: 'User'     //Reference from this field to another model
     }
+}, {
+    timestamps: true
 })
+
+const Task = mongoose.model('Task', taskSchema)//Basically the 'tasks' inside model is the collection. and inside it we specify documents and their fields
 
 module.exports = Task

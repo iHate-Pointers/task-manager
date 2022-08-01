@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 // const validator = require('validator')
 
 //IT uses previously mongoDB client thingy
-mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api',{
+mongoose.connect(process.env.MONGODB_URL,{
     // useNewUrlParser: true, //MongoDB new version will always make this seem tre
     // useCreateIndex: true //This will make sure indexs are made to quickly access the data we need
 })
