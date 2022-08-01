@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node source/app.js",
-    "dev": "env-cmd -f ./config/dev.env nodemon source/app.js -e js,html,css,env" 
+    "dev": "env-cmd -f ./config/dev.env nodemon source/app.js -e js,html,css"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +14,7 @@
     "@mailchimp/mailchimp_marketing": "^3.0.75",
     "bcryptjs": "^2.4.3",
     "chalk": "^5.0.1",
+    "dotenv": "^16.0.1",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.8.0",

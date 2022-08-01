@@ -1,10 +1,12 @@
 const mongoose = require('mongoose')
+// require('dotenv').config('./config/dev');
 // const validator = require('validator')
 
 //IT uses previously mongoDB client thingy
-mongoose.connect(process.env.MONGODB_URL,{
-    // useNewUrlParser: true, //MongoDB new version will always make this seem tre
-    // useCreateIndex: true //This will make sure indexs are made to quickly access the data we need
+mongoose.connect(process.env.MONGODB_URI,{ /** */
+    useNewUrlParser: true, //MongoDB new version will always make this seem tre
+    // useCreateIndex: true, //This will make sure indexs are made to quickly access the data we need
+    // useFindAndModify: true
 })
 /* Data Sanitization helps us alter data before saving, removing empty space before sending it back to our DB
 Data Validation we can enfore to some rules, user age should be greater than 18 etc...*/

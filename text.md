@@ -209,7 +209,11 @@ WE are locally using our storage as MongoDB storage. Now want to use MongoDB dat
 MongoDB Atlas -> a DB site officially handled by MongoDB
 MongoDB Compass -> like Robo3T but official handel
 
+To setup place for environment variables in  heroku we have 
+heroku config:set key=value
 
+and to unset the above one we have
+heroku config:unset key=value
 
 
 

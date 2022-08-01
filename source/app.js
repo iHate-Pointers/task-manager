@@ -1,5 +1,5 @@
 const express = require('express')
-require('./models/db/mongoose') //We only need to connect to DB with this
+require('./db/mongoose') //We only need to connect to DB with this
 const User = require('./models/user')
 const Task = require('./models/task')
 const userRouter = require('./routers/user')
@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken')
 const multer = require('multer')
 
 const app = express()
-const port = process.env.PORT;
+const port = process.env.PORT /** */
 
 //This is Middleware, all request to get is disabled here!
 // app.use((req, res, next) => {

@@ -81,7 +81,7 @@ userSchema.methods.toJSON = function () {
 /*Methods are accesible in instances, static methods are accesible in models (like has email and password  etc.)*/
 userSchema.methods.generateAuthToken = async function () { //Since it contains this keyword
     const user = this
-    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET ) //Since it's an object we need to stringy it up, 2nd arg is secret key
+    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET) //Since it's an object we need to stringy it up, 2nd arg is secret key
     user.tokens = user.tokens.concat ({ token }) //Adding the above generated string to token
     await user.save()
 
